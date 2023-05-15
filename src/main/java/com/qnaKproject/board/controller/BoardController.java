@@ -2,11 +2,15 @@ package com.qnaKproject.board.controller;
 
 import com.qnaKproject.board.entitiy.Board;
 import com.qnaKproject.board.service.BoardService;
+import org.hibernate.loader.plan.build.spi.ExpandingQuerySpace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 public class BoardController {
@@ -24,10 +28,11 @@ public class BoardController {
     }
 
     @PostMapping("/board/writepro")
-    public String boardWritePro(Board board) {
-        boardService.write(board);
-
-        return " ";
+    public String boardWritePro(Board board, Model model, MultipartFile file) throws Exception {
+        boardService.write(board, file);
+        model.addAttribute("message", "글 작성이 완료되었습니다.");
+        model.addAttribute("searchUrl", "/board/list");
+        return "message";
     }
 
     @GetMapping("/board/list")
@@ -60,15 +65,20 @@ public class BoardController {
     }
 
     @PostMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable("id") Integer id, Board board) {
+    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception{
 
-        Board boardTemp = boardService.boardView(id);
+        //Board boardTemp = boardService.boardView(id);
 
-        boardTemp.setTitle(board.getTitle());
-        boardTemp.setContent(board.getContent());
+        //boardTemp.setTitle(board.getTitle());
+        //boardTemp.setContent(board.getContent());
 
-        boardService.write(boardTemp);
+        //boardService.write(boardTemp);
 
-        return "redirect:/board/list";
+        //return "redirect:/board/list";
+        boardService.write(board, file);
+        model.addAttribute("message", "수정이 완료되었습니다.");
+        model.addAttribute("searchUrl", "/board/list");
+
+        return "message";
     }
 }
