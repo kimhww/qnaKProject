@@ -34,8 +34,10 @@
 
     <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
       <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1})}" th:text="${page}"></a>
-      <strong th:if="${page == nowPage}" th:text="${page}" style="color : green"></strong>
+      <strong th:if="${page == nowPage}" th:text="${page}" style="color : blue"></strong>
     </th:block>
+    <button type="submit">문의 작성</button>
+
   </div>
 </body>
 </html>
