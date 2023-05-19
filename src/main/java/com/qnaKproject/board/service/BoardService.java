@@ -12,18 +12,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.nio.channels.MulticastChannel;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class BoardService {
 
-    @Autowired
     private BoardRepository boardRepository;
 
     //글 작성 처리
     public void write(Board board, MultipartFile file) throws Exception{
 
-        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+        if (file == null) {
+            throw new IllegalArgumentException("파일이 제공되지 않았습니다.");
+        }
+
+        String projectPath = System.getProperty("user.dir") + "\\board\\src\\main\\resources\\static\\files";
 
         UUID uuid = UUID.randomUUID();
 
@@ -46,11 +50,17 @@ public class BoardService {
 
     //특정 게시글 불러오기
     public Board boardView(Integer id) {
+        Optional<Board> optionalBoard = boardRepository.findById(id);
         return boardRepository.findById(id).get();
     }
 
     //특정 게시글 삭제
     public void boardDelete(Integer id) {
         boardRepository.deleteById(id);
+    }
+
+    public Page<Board> boardSearchList(String searchKeyword, Pageable pageable) {
+
+        return boardRepository.findByTitleContaining(searchKeyword, pageable);
     }
 }

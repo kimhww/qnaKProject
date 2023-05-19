@@ -36,7 +36,10 @@
       <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1})}" th:text="${page}"></a>
       <strong th:if="${page == nowPage}" th:text="${page}" style="color : blue"></strong>
     </th:block>
-    <button type="submit">문의 작성</button>
+
+    <form action="/board/write" method="get" enctype="multipart/form-data">
+      <button type="submit">문의 작성</button>
+    </form>
 
   </div>
 </body>

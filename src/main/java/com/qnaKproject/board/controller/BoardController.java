@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 
 @Controller
 public class BoardController {
@@ -21,12 +20,13 @@ public class BoardController {
     private BoardService boardService;
 
     @GetMapping("/")
-    @ResponseBody
-    public String main(){
-        return "hello";
+    //@ResponseBody
+    public String main() {
+        return "redirect:/board/list";
     }
+
     @GetMapping("/board/write")
-    public String boardWriteForm(){
+    public String boardWriteForm() {
         return "boardwrite";
     }
 
@@ -39,9 +39,17 @@ public class BoardController {
     }
 
     @GetMapping("/board/list")
-    public String boardlist(Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+    public String boardlist(Model model,
+                            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                            String searchKeyword) {
 
-        Page<Board> list = boardService.boardList(pageable);
+        Page<Board> list = null;
+
+        if (searchKeyword == null) {
+            list = boardService.boardList(pageable);
+        } else {
+            list = boardService.boardSearchList(searchKeyword, pageable);
+        }
 
         int nowPage = list.getPageable().getPageNumber() + 1;
         int startPage = Math.max(nowPage - 4, 1);
@@ -63,10 +71,14 @@ public class BoardController {
     }
 
     @GetMapping("/board/delete")
-    public String boardDelete(Integer id){
+    public String boardDelete(Integer id, Model model) {
         boardService.boardDelete(id);
 
-        return "redirect:/board/list";
+        model.addAttribute("message", "해당 글이 삭제되었습니다.");
+        model.addAttribute("searchUrl", "/board/list");
+        return "message";
+
+        //return "redirect:/board/list";
     }
 
     @GetMapping("/board/modify/{id}")
@@ -78,20 +90,25 @@ public class BoardController {
     }
 
     @PostMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable("id") Integer id, Board board, MultipartFile file) throws Exception{
+    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception{
+        try {
+            Board boardTemp = boardService.boardView(id);
 
-        Board boardTemp = boardService.boardView(id);
+            boardTemp.setTitle(board.getTitle());
+            boardTemp.setContent(board.getContent());
 
-        boardTemp.setTitle(board.getTitle());
-        boardTemp.setContent(board.getContent());
+            boardService.write(boardTemp, file);
 
-        boardService.write(boardTemp, file);
+            // 수정이 성공한 경우에 대한 처리
+            model.addAttribute("message", "수정이 완료되었습니다.");
+            model.addAttribute("searchUrl", "/board/list");
+            return "message";
+        } catch (Exception e) {
+            // 예외가 발생한 경우에 대한 처리
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "게시물 수정 중 오류가 발생했습니다.");
+            return "errorPage";
+        }
 
-        return "redirect:/board/list";
-
-        //model.addAttribute("message", "수정이 완료되었습니다.");
-        //model.addAttribute("searchUrl", "/board/list");
-
-        //return "message";
     }
 }
