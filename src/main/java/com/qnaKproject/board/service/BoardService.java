@@ -18,16 +18,13 @@ import java.util.UUID;
 @Service
 public class BoardService {
 
+    @Autowired
     private BoardRepository boardRepository;
 
     //글 작성 처리
     public void write(Board board, MultipartFile file) throws Exception{
 
-        if (file == null) {
-            throw new IllegalArgumentException("파일이 제공되지 않았습니다.");
-        }
-
-        String projectPath = System.getProperty("user.dir") + "\\board\\src\\main\\resources\\static\\files";
+        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
         UUID uuid = UUID.randomUUID();
 
@@ -42,6 +39,7 @@ public class BoardService {
 
         boardRepository.save(board);
     }
+
 
     //게시물 리스트 처리
     public Page<Board> boardList(Pageable pageable) {

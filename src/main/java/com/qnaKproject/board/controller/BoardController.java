@@ -40,16 +40,9 @@ public class BoardController {
 
     @GetMapping("/board/list")
     public String boardlist(Model model,
-                            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                            String searchKeyword) {
+                            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<Board> list = null;
-
-        if (searchKeyword == null) {
-            list = boardService.boardList(pageable);
-        } else {
-            list = boardService.boardSearchList(searchKeyword, pageable);
-        }
+        Page<Board> list = boardService.boardList(pageable);
 
         int nowPage = list.getPageable().getPageNumber() + 1;
         int startPage = Math.max(nowPage - 4, 1);
@@ -59,7 +52,6 @@ public class BoardController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-
 
         return "boardlist";
     }
@@ -91,24 +83,19 @@ public class BoardController {
 
     @PostMapping("/board/update/{id}")
     public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception{
-        try {
-            Board boardTemp = boardService.boardView(id);
 
-            boardTemp.setTitle(board.getTitle());
-            boardTemp.setContent(board.getContent());
+        Board boardTemp = boardService.boardView(id);
 
-            boardService.write(boardTemp, file);
+        boardTemp.setTitle(board.getTitle());
+        boardTemp.setContent(board.getContent());
 
-            // 수정이 성공한 경우에 대한 처리
-            model.addAttribute("message", "수정이 완료되었습니다.");
-            model.addAttribute("searchUrl", "/board/list");
-            return "message";
-        } catch (Exception e) {
-            // 예외가 발생한 경우에 대한 처리
-            e.printStackTrace();
-            model.addAttribute("errorMessage", "게시물 수정 중 오류가 발생했습니다.");
-            return "errorPage";
-        }
+        boardService.write(boardTemp, file);
 
+        return "redirect:/board/list";
+
+        //model.addAttribute("message", "수정이 완료되었습니다.");
+        //model.addAttribute("searchUrl", "/board/list");
+
+        //return "message";
     }
 }
