@@ -82,7 +82,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception{
+    public String boardUpdate(@PathVariable("id") Integer id, Board board, MultipartFile file) throws Exception{
 
         Board boardTemp = boardService.boardView(id);
 
