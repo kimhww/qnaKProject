@@ -2,25 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>게시물 작성폼</title>
+  <title>게시물 수정폼</title>
 </head>
 
 <style>
 
-  .layout {
-    width : 500px;
-    margin : 0 auto;
-    margin-top : 40px;
-  }
-  .layout input {
-    width : 100%;
-    box-sizing : border-box;
-  }
-  .layout textarea {
-    width : 100%;
-    margin-top : 10px;
-    min-height : 300px;
-  }
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .layout {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+
+    .layout input,
+    .layout textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-top: 10px;
+        box-sizing: border-box;
+    }
+
+    .layout textarea {
+        min-height: 300px;
+    }
+
+    .layout input[type="file"] {
+        margin-top: 10px;
+    }
+
+    .layout button {
+        padding: 10px 20px;
+        background-color: #FF7443;
+        border: none;
+        color: #fff;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-top: 10px;
+
+    }
+
+    .layout button:hover {
+        background-color: #FFBD8A;
+    }
+
+    .layout .button-container {
+        display: flex;
+        justify-content: right;
+    }
 
 </style>
 
@@ -30,7 +63,11 @@
         <input name="title" type="text" th:value="${board.title}">
         <textarea name="content" th:text="${board.content}"></textarea>
         <input type="file" name="file">
-        <button type="submit">수정</button>
+
+        <div class="button-container">
+            <button type="submit">수정</button>
+        </div>
+
     </form>
 </div>
 </body>

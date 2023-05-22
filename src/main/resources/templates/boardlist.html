@@ -6,15 +6,101 @@
 </head>
 
 <style>
-    .layout {
-        width : 500px;
-        margin : 0 auto;
-        margin-top : 40px;
-    }
+
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  h2{
+    width : 700px;
+    margin : 0 auto;
+    margin-top : 40px;
+  }
+  .layout {
+      width : 700px;
+      margin : 0 auto;
+      margin-top : 40px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+
+  th {
+    background-color: #FF7443;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  input[type="text"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 630px;
+  }
+
+  button {
+    padding: 5px 10px;
+    background-color: #FF7443;
+    border: none;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #FFBD8A;
+  }
+
+  strong {
+    color: orangered;
+  }
+
+  .pagination {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .pagination a,
+  .pagination strong {
+    margin: 0 5px;
+  }
+
+  .form-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .form-container .write-button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+  }
 
 </style>
 <body>
+
+  <h2>여우 문의 게시판  <img src="/foxLogo.png" alt="My Image" width="40" height="40"></h2>
+
   <div class="layout">
+    <div class="form-container">
+      <form action="/board/write" method="get" enctype="multipart/form-data" class="write-button">
+        <button type="submit">문의 작성</button>
+      </form>
+    </div>
     <table>
       <thead>
         <tr>
@@ -32,19 +118,19 @@
       </tbody>
     </table>
 
-    <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-      <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>
-      <strong th:if="${page == nowPage}" th:text="${page}" style="color : orangered"></strong>
-    </th:block>
+    <div class="pagination">
+      <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>
+        <strong th:if="${page == nowPage}" th:text="${page}" style="color : orangered"></strong>
+      </th:block>
+    </div>
 
-    <form th:action="@{/board/list}" method="get">
-      <input type="text" name="searchKeyword">
-      <button type="submit">검색</button>
-    </form>
-
-    <form action="/board/write" method="get" enctype="multipart/form-data">
-      <button type="submit">문의 작성</button>
-    </form>
+    <div class="form-container">
+      <form th:action="@{/board/list}" method="get">
+        <input type="text" name="searchKeyword">
+        <button type="submit">검색</button>
+      </form>
+    </div>
 
   </div>
 </body>
